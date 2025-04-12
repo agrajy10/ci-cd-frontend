@@ -38,3 +38,50 @@ jobs:
             --template-file ./ec2.yml \
             --stack-name EC2Stack \
             --capabilities CAPABILITY_NAMED_IAM
+
+      # Retrieve the public IP of the EC2 instance
+      - name: Get EC2 Instance ID
+        id: get-ec2-id
+        run: |
+          INSTANCE_ID=$(aws cloudformation describe-stack-resources \
+          --stack-name EC2Stack \
+          --query "StackResources[?LogicalResourceId=='EC2Instance'].PhysicalResourceId" \
+          --output text)
+            echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+
+      # Wait for EC2 instance to be ready
+      - name: Wait for EC2 Instance
+        run: |
+          sleep 60
+
+      # Deploy code to EC2 instance using SSM
+      - name: Deploy Code to EC2 via SSM
+        run: |
+          aws ssm send-command \
+          --instance-ids $INSTANCE_ID \
+          --document-name "AWS-RunShellScript" \
+          --comment "Deploy application" \
+          --parameters commands=[
+              "git clone https://github.com/agrajy10/ci-cd-frontend.git",
+              "cd ci-cd-frontend",
+              "npm install",
+              "npm run build",
+              "sudo chown -R www-data:www-data /home/ubuntu/ci-cd-frontend/dist"
+              "sudo find /home/ubuntu/ci-cd-frontend/dist -type d -exec chmod 755 {} \;"
+              "sudo find /home/ubuntu/ci-cd-frontend/dist -type f -exec chmod 644 {} \;"
+              "sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF
+              server {
+                  listen 80;
+                  server_name _;
+
+                  root /home/ubuntu/ci-cd-frontend/dist;
+                  index index.html;
+
+                  location / {
+                      try_files \$uri /index.html;
+                  }
+              }
+              EOF'"
+              "sudo systemctl restart nginx"
+            ] \
+          --region eu-north-1

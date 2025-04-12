@@ -61,6 +61,9 @@ Resources:
           yum install -y amazon-ssm-agent
           systemctl enable amazon-ssm-agent
           systemctl start amazon-ssm-agent
+          sudo apt-get install curl -y
+          curl -sL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+          sudo apt-get install -y nodejs
           sudo apt-get install nginx -y
 
 Outputs:
