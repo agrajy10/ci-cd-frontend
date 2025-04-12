@@ -49,5 +49,5 @@ jobs:
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=InstanceIds,Values=i-058e4aacd23fbcfba" \
-            --parameters '{"commands":["#!/bin/bash", "set -e", "echo Cloning the repository...", "git clone https://github.com/agrajy10/ci-cd-frontend.git", "cd ci-cd-frontend", "echo Installing dependencies...", "npm install", "echo Building the Vite React project...", "npm run build", "echo Installing serve to serve the build...", "npm install -g serve", "echo Serving the build...", "sudo pkill -f serve || true", "nohup serve -s build -l 80 &", "echo Deployment completed successfully."]}' \
+            --parameters '{"commands":["git clone https://github.com/agrajy10/ci-cd-frontend.git"]}' \
             --region eu-north-1
