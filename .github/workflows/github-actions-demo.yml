@@ -16,7 +16,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::849059301510:role/github-action-deploy-role
+          role-to-assume: arn:aws:iam::849059301510:role/github-action-deploy
           aws-region: eu-north-1
 
       # Log AWS identity to verify OIDC authentication
