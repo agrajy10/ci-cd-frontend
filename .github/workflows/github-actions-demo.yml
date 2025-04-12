@@ -53,10 +53,6 @@ jobs:
       - name: Wait for EC2 Instance
         run: sleep 60
 
-      # Print EC2 Instance ID
-      - name: Print EC2 Instance ID
-        run: echo "EC2 Instance ID: $INSTANCE_ID"
-        
       # Deploy code to EC2 via SSM
       - name: Deploy Code to EC2 via SSM
         run: |
