@@ -49,8 +49,8 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      KeyName: my-key-pair # Replace with the name of your existing key pair
-      ImageId: ami-0abcdef1234567890 # Replace with a valid AMI ID for your region
+      KeyName: ci-cd # Replace with the name of your existing key pair
+      ImageId: ami-0c1ac8a41498c1a9c # Replace with a valid AMI ID for your region
       IamInstanceProfile: !Ref SSMInstanceProfile
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
