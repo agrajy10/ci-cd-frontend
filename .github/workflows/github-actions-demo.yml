@@ -53,6 +53,7 @@ jobs:
       - name: Wait for EC2 Instance
         run: |
           sleep 60
+          chmod +x deploy.sh
 
       # Deploy code to EC2 instance using SSM
       - name: Deploy Code to EC2 via SSM
@@ -61,27 +62,5 @@ jobs:
           --instance-ids $INSTANCE_ID \
           --document-name "AWS-RunShellScript" \
           --comment "Deploy application" \
-          --parameters commands=[
-              "git clone https://github.com/agrajy10/ci-cd-frontend.git",
-              "cd ci-cd-frontend",
-              "npm install",
-              "npm run build",
-              "sudo chown -R www-data:www-data /home/ubuntu/ci-cd-frontend/dist"
-              "sudo find /home/ubuntu/ci-cd-frontend/dist -type d -exec chmod 755 {} \;"
-              "sudo find /home/ubuntu/ci-cd-frontend/dist -type f -exec chmod 644 {} \;"
-              "sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF
-              server {
-                  listen 80;
-                  server_name _;
-
-                  root /home/ubuntu/ci-cd-frontend/dist;
-                  index index.html;
-
-                  location / {
-                      try_files \$uri /index.html;
-                  }
-              }
-              EOF'"
-              "sudo systemctl restart nginx"
-            ] \
+          --parameters commands=["/home/ubuntu/deploy.sh"] \
           --region eu-north-1
