@@ -79,6 +79,8 @@ jobs:
                 
                 "echo \"Building application...\"",
                 "npm run build || { echo \"build failed\"; exit 1; }",
+
+                "npm run preview || { echo \"preview failed\"; exit 1; }",
                 
                 "# Install nginx if not already installed",
                 "if ! command -v nginx &> /dev/null; then",
