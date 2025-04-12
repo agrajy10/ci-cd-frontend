@@ -14,7 +14,7 @@ jobs:
 
       # Authenticate using OIDC
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::849059301510:role/github-action-deploy-role
           aws-region: eu-north-1
