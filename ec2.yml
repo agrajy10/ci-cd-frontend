@@ -48,7 +48,7 @@ Resources:
   MyEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: t2.micro
+      InstanceType: t3.micro
       KeyName: ci-cd # Replace with the name of your existing key pair
       ImageId: ami-0c1ac8a41498c1a9c # Replace with a valid AMI ID for your region
       IamInstanceProfile: !Ref SSMInstanceProfile
