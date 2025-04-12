@@ -57,7 +57,7 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          LOG_FILE="/var/log/user-data.log"
+          LOG_FILE='/var/log/user-data.log'
           exec > >(tee -a ${LOG_FILE} | logger -t user-data) 2>&1
 
           echo "Starting UserData script execution..." | tee -a ${LOG_FILE}
