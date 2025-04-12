@@ -79,8 +79,32 @@ jobs:
                 
                 "echo \"Building application...\"",
                 "npm run build || { echo \"build failed\"; exit 1; }",
-
-                "npm run preview || { echo \"preview failed\"; exit 1; }",
+                
+                "# Create a systemd service file for the React app",
+                "echo \"Creating systemd service for React app...\"",
+                "sudo tee /etc/systemd/system/react-app.service > /dev/null << EOF",
+                "[Unit]",
+                "Description=React App Preview Server",
+                "After=network.target",
+                "",
+                "[Service]",
+                "Type=simple",
+                "User=ec2-user",
+                "WorkingDirectory='${APP_PATH}'",
+                "ExecStart=/usr/bin/npm run preview",
+                "Restart=on-failure",
+                "Environment=PORT=3000",
+                "",
+                "[Install]",
+                "WantedBy=multi-user.target",
+                "EOF",
+                
+                "# Reload systemd to recognize the new service",
+                "sudo systemctl daemon-reload",
+                
+                "# Enable and start/restart the service",
+                "sudo systemctl enable react-app.service",
+                "sudo systemctl restart react-app.service || { echo \"Failed to restart React app service\"; exit 1; }",
                 
                 "# Install nginx if not already installed",
                 "if ! command -v nginx &> /dev/null; then",
@@ -88,16 +112,20 @@ jobs:
                 "  sudo amazon-linux-extras install nginx1 -y || sudo yum install nginx -y",
                 "fi",
                 
-                "# Create Nginx configuration",
-                "echo \"Configuring Nginx to serve the application...\"",
+                "# Create Nginx configuration as a reverse proxy",
+                "echo \"Configuring Nginx as reverse proxy...\"",
                 "sudo tee /etc/nginx/conf.d/app.conf > /dev/null << EOF",
                 "server {",
                 "  listen 80;",
                 "  server_name _;",
-                "  root '${APP_PATH}'/dist;",
-                "  index index.html;",
+                "",
                 "  location / {",
-                "    try_files \\$uri \\$uri/ /index.html;",
+                "    proxy_pass http://localhost:3000;",
+                "    proxy_http_version 1.1;",
+                "    proxy_set_header Upgrade \\$http_upgrade;",
+                "    proxy_set_header Connection 'upgrade';",
+                "    proxy_set_header Host \\$host;",
+                "    proxy_cache_bypass \\$http_upgrade;",
                 "  }",
                 "}",
                 "EOF",
@@ -111,6 +139,12 @@ jobs:
                 "# Restart Nginx to apply changes",
                 "sudo systemctl enable nginx",
                 "sudo systemctl restart nginx || { echo \"Failed to restart Nginx\"; exit 1; }",
+                
+                "# Wait a moment for the service to start",
+                "sleep 5",
+                
+                "# Check if service is running properly",
+                "sudo systemctl status react-app.service",
                 
                 "echo \"Deployment completed successfully at $(date)\""
               ],
