@@ -30,6 +30,7 @@ jobs:
       # Print current directory
       - name: Print current directory
         run: pwd
+        run: ls -la
 
       # Deploy the CloudFormation stack
       - name: Deploy CloudFormation Stack
