@@ -93,19 +93,7 @@ jobs:
 
                 "# Create Nginx configuration as a reverse proxy",
                 "echo \"Configuring Nginx as reverse proxy...\"",
-                "sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF'",
-                "server {",
-                "  listen 80;",
-                "  server_name _;",
-                "",
-                "  root /home/ec2-user/app/dist",
-                "  index index.html;",
-                "",
-                "  location / {",
-                "    try_files \$uri /index.html;",
-                "  }",
-                "}",
-                "EOF",
+                "sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF\nserver {\n  listen 80;\n  server_name _;\n\n  root /home/ec2-user/app/dist;\n  index index.html;\n\n  location / {\n    try_files \\$uri /index.html;\n  }\n}\nEOF'",
                 
                 "sudo systemctl restart nginx || { echo \"Failed to restart Nginx\"; exit 1; }", 
                
