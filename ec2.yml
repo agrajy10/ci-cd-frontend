@@ -57,12 +57,26 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
+          LOG_FILE="/var/log/user-data.log"
+          exec > >(tee -a ${LOG_FILE} | logger -t user-data) 2>&1
+
+          echo "Starting UserData script execution..." | tee -a ${LOG_FILE}
+
           # Step 1: Update the package index
+          echo "Updating package index..." | tee -a ${LOG_FILE}
           sudo apt-get update
+
+          echo "Installing curl..." | tee -a ${LOG_FILE}
           sudo apt-get install curl -y
+
+          echo "Installing Node.js..." | tee -a ${LOG_FILE}
           curl -sL https://deb.nodesource.com/setup_current.x | sudo -E bash -
           sudo apt-get install -y nodejs
+
+          echo "Installing Nginx..." | tee -a ${LOG_FILE}
           sudo apt-get install nginx -y
+
+          echo "UserData script execution completed." | tee -a ${LOG_FILE}
 
 Outputs:
   InstanceId:
