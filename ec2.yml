@@ -77,6 +77,12 @@ Resources:
 
           echo "UserData script execution completed." | tee -a /var/log/user-data.log
 
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+
+          unzip awscliv2.zip
+
+          sudo ./aws/install
+
 Outputs:
   InstanceId:
     Description: The Instance ID of the EC2 instance
