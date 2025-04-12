@@ -8,12 +8,20 @@ jobs:
       id-token: write
       contents: read
     steps:
+      # Enable debug logging
+      - name: Enable Debug Logging
+        run: echo "AWS_SDK_LOAD_CONFIG=1" >> $GITHUB_ENV
+
       # Authenticate using OIDC
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::849059301510:role/github-action-deploy-role
           aws-region: eu-north-1
+
+      # Log AWS identity to verify OIDC authentication
+      - name: Verify AWS Identity
+        run: aws sts get-caller-identity
 
       # Check out repository code
       - name: Check out repository code
