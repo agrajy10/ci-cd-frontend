@@ -71,7 +71,7 @@ jobs:
                 "else",
                 "  echo \"Subsequent deployment - updating existing codebase\"",
                 "  cd \"'${APP_PATH}'\"",
-                "  git pull origin main || { echo \"Git pull failed\"; exit 1; }",
+                "  git pull origin master || { echo \"Git pull failed\"; exit 1; }",
                 "fi",
                 
                 "echo \"Installing dependencies...\"",
