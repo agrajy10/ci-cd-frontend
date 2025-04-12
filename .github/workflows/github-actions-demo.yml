@@ -59,21 +59,21 @@ jobs:
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=instanceIds,Values=${{ env.INSTANCE_ID }}" \
-            --parameters 'commands=[
-              "#!/bin/bash",
-              "set -e",
-              "echo Cloning the repository...",
-              "git clone https://github.com/agrajy10/ci-cd-frontend.git /home/ubuntu/ci-cd-frontend",
-              "cd /home/ubuntu/ci-cd-frontend",
-              "echo Installing dependencies...",
-              "npm install",
-              "echo Building the Vite React project...",
-              "npm run build",
-              "echo Installing serve to serve the build...",
-              "npm install -g serve",
-              "echo Serving the build...",
-              "sudo pkill -f serve || true", # Stop any existing serve process
-              "nohup serve -s build -l 80 &",
-              "echo Deployment completed successfully."
-            ]' \
+            --parameters "{\"commands\":[
+              \"#!/bin/bash\",
+              \"set -e\",
+              \"echo Cloning the repository...\",
+              \"git clone https://github.com/agrajy10/ci-cd-frontend.git /home/ubuntu/ci-cd-frontend\",
+              \"cd /home/ubuntu/ci-cd-frontend\",
+              \"echo Installing dependencies...\",
+              \"npm install\",
+              \"echo Building the Vite React project...\",
+              \"npm run build\",
+              \"echo Installing serve to serve the build...\",
+              \"npm install -g serve\",
+              \"echo Serving the build...\",
+              \"sudo pkill -f serve || true\", # Stop any existing serve process
+              \"nohup serve -s build -l 80 &\",
+              \"echo Deployment completed successfully.\"
+            ]}" \
             --region eu-north-1
