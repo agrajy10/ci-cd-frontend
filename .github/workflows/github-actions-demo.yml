@@ -87,13 +87,13 @@ jobs:
                 "  sudo amazon-linux-extras install nginx1 -y || sudo yum install nginx -y",
                 "fi",
 
-                "sudo chown -R www-data:www-data /home/ec2-user/app/dist"
-                "sudo find /home/ec2-user/app/dist -type d -exec chmod 755 {} \;"
-                "sudo find /home/ec2-user/app/dist -type f -exec chmod 644 {} \;"
+                "sudo chown -R www-data:www-data /home/ec2-user/app/dist;",
+                "sudo find /home/ec2-user/app/dist -type d -exec chmod 755 {} \\;",
+                "sudo find /home/ec2-user/app/dist -type f -exec chmod 644 {} \\;"
 
                 "# Create Nginx configuration as a reverse proxy",
                 "echo \"Configuring Nginx as reverse proxy...\"",
-                "sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF",
+                "sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF'",
                 "server {",
                 "  listen 80;",
                 "  server_name _;",
