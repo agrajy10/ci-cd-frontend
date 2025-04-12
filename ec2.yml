@@ -56,27 +56,28 @@ Resources:
         - !Ref EC2SecurityGroup
       UserData:
         Fn::Base64: !Sub |
-          #!/bin/bash
-          LOG_FILE='/var/log/user-data.log'
-          exec > >(tee -a $LOG_FILE | logger -t user-data) 2>&1
+          UserData:
+  Fn::Base64: !Sub |
+    #!/bin/bash
+    exec > >(tee -a /var/log/user-data.log | logger -t user-data) 2>&1
 
-          echo "Starting UserData script execution..." | tee -a ${LOG_FILE}
+    echo "Starting UserData script execution..." | tee -a /var/log/user-data.log
 
-          # Step 1: Update the package index
-          echo "Updating package index..." | tee -a ${LOG_FILE}
-          sudo apt-get update
+    # Step 1: Update the package index
+    echo "Updating package index..." | tee -a /var/log/user-data.log
+    sudo apt-get update
 
-          echo "Installing curl..." | tee -a ${LOG_FILE}
-          sudo apt-get install curl -y
+    echo "Installing curl..." | tee -a /var/log/user-data.log
+    sudo apt-get install curl -y
 
-          echo "Installing Node.js..." | tee -a ${LOG_FILE}
-          curl -sL https://deb.nodesource.com/setup_current.x | sudo -E bash -
-          sudo apt-get install -y nodejs
+    echo "Installing Node.js..." | tee -a /var/log/user-data.log
+    curl -sL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+    sudo apt-get install -y nodejs
 
-          echo "Installing Nginx..." | tee -a ${LOG_FILE}
-          sudo apt-get install nginx -y
+    echo "Installing Nginx..." | tee -a /var/log/user-data.log
+    sudo apt-get install nginx -y
 
-          echo "UserData script execution completed." | tee -a ${LOG_FILE}
+    echo "UserData script execution completed." | tee -a /var/log/user-data.log
 
 Outputs:
   InstanceId:
