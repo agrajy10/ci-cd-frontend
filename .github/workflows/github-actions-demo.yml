@@ -43,22 +43,11 @@ jobs:
       - name: Wait for EC2 Instance
         run: sleep 30
 
-      # Get EC2 instance ID
-      - name: Get EC2 Instance ID
-        id: get-instance-id
-        run: |
-          INSTANCE_ID=$(aws ec2 describe-instances \
-            --filters "Name=tag:Name,Values=EC2Stack" \
-                  --query "Reservations[0].Instances[0].InstanceId" \
-                  --output text \
-                  --region eu-north-1)
-          echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
-
       # Deploy code to EC2 via SSM
       - name: Deploy Code to EC2 via SSM
         run: |
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
-            --targets "Key=InstanceIds,Values=$INSTANCE_ID" \
+            --targets "Key=InstanceIds,Values=i-058e4aacd23fbcfba" \
             --parameters '{"commands":["#!/bin/bash", "set -e", "echo Cloning the repository...", "git clone https://github.com/agrajy10/ci-cd-frontend.git", "cd ci-cd-frontend", "echo Installing dependencies...", "npm install", "echo Building the Vite React project...", "npm run build", "echo Installing serve to serve the build...", "npm install -g serve", "echo Serving the build...", "sudo pkill -f serve || true", "nohup serve -s build -l 80 &", "echo Deployment completed successfully."]}' \
             --region eu-north-1
