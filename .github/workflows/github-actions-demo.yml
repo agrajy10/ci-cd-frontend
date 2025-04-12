@@ -1,18 +1,32 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Deploy EC2 Stack
 on: [push]
+
 jobs:
-  Explore-GitHub-Actions:
+  Deploy-EC2-Stack:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      # Authenticate using OIDC
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::849059301510:role/github-action-deploy-role
+          aws-region: eu-north-1
+
+      # Check out repository code
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
+
+      # Print current directory
+      - name: Print current directory
+        run: pwd
+
+      # Deploy the CloudFormation stack
+      - name: Deploy CloudFormation Stack
         run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          aws cloudformation deploy \
+            --template-file c:/ci-cd-practice/ci-cd-frontend/ec2.yml \
+            --stack-name EC2Stack \
+            --capabilities CAPABILITY_NAMED_IAM
