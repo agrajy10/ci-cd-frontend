@@ -62,5 +62,5 @@ jobs:
           --instance-ids $INSTANCE_ID \
           --document-name "AWS-RunShellScript" \
           --comment "Deploy application" \
-          --parameters commands=["/home/ubuntu/deploy.sh"] \
+          --parameters commands=["./deploy.sh"] \
           --region eu-north-1
